@@ -78,6 +78,7 @@ class CPU:
     def handle_CMP(self):
         reg_address_a = self.ram[self.pc + 1]
         reg_address_b = self.ram[self.pc + 2]
+        self.alu('CMP', reg_address_a, reg_address_b)
 
     def handle_JMP(self):
         reg_address = self.ram[self.pc + 1]
@@ -85,18 +86,15 @@ class CPU:
 
     def handle_JEQ(self):
         eq = self.FL & 0b00000001
-
-        if eq:
-            reg_address = self.ram[self.pc + 1]
-            self.pc = self.reg[reg_address]
+        if eq == 1:
+            self.handle_JMP()
         else:
             self.pc += 2
 
     def handle_JNE(self):
         eq = self.FL & 0b00000001
         if not eq:
-            reg_address = self.ram[self.pc + 1]
-            self.pc = self.reg[reg_address]
+            self.handle_JMP()
         else:
             self.pc += 2
 
