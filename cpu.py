@@ -21,7 +21,7 @@ class CPU:
 
         address = 0
 
-        filename = sys.argv[1] + '.ls8'
+        filename = 'sctest.ls8'
 
         file = open(filename, 'r')
         program = []
