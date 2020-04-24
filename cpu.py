@@ -16,6 +16,14 @@ class CPU:
         self.branchtable[0b01010101] = self.handle_JEQ
         self.branchtable[0b01010110] = self.handle_JNE
 
+        self.branchtable[0b10101000] = self.handle_AND
+        self.branchtable[0b10101010] = self.handle_OR
+        self.branchtable[0b10101011] = self.handle_XOR
+        self.branchtable[0b01101001] = self.handle_NOT
+        self.branchtable[0b10101100] = self.handle_SHL
+        self.branchtable[0b10101101] = self.handle_SHR
+        self.branchtable[0b10100100] = self.handle_MOD
+
     def load(self):
         """Load a program into memory."""
 
@@ -60,6 +68,14 @@ class CPU:
             self.reg[reg_a] |= self.reg[reg_b]
         elif op == 'XOR':
             self.reg[reg_a] ^= self.reg[reg_b]
+        elif op == 'NOT':
+            self.reg[reg_a] = ~self.reg[reg_a]
+        elif op == 'SHL':
+            self.reg[reg_a] <<= self.reg[reg_b]
+        elif op == 'SHR':
+            self.reg[reg_a] >>= self.reg[reg_b]
+        elif op == 'MOD':
+            self.reg[reg_a] %= self.reg[reg_b]
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -103,6 +119,40 @@ class CPU:
             self.handle_JMP()
         else:
             self.pc += 2
+
+    def handle_AND(self):
+        reg_a = self.ram[self.pc + 1]
+        reg_b = self.ram[self.pc + 2]
+        self.alu('AND', reg_a, reg_b)
+
+    def handle_OR(self):
+        reg_a = self.ram[self.pc + 1]
+        reg_b = self.ram[self.pc + 2]
+        self.alu('OR', reg_a, reg_b)
+
+    def handle_XOR(self):
+        reg_a = self.ram[self.pc + 1]
+        reg_b = self.ram[self.pc + 2]
+        self.alu('XOR', reg_a, reg_b)
+
+    def handle_NOT(self):
+        reg_a = self.ram[self.pc + 1]
+        self.alu('AND', reg_a)
+
+    def handle_SHL(self):
+        reg_a = self.ram[self.pc + 1]
+        reg_b = self.ram[self.pc + 2]
+        self.alu('SHL', reg_a, reg_b)
+
+    def handle_SHR(self):
+        reg_a = self.ram[self.pc + 1]
+        reg_b = self.ram[self.pc + 2]
+        self.alu('SHR', reg_a, reg_b)
+
+    def handle_SHR(self):
+        reg_a = self.ram[self.pc + 1]
+        reg_b = self.ram[self.pc + 2]
+        self.alu('MOD', reg_a, reg_b)
 
     def run(self):
         """Run the CPU."""
