@@ -6,10 +6,12 @@ class CPU:
         self.ram = [0] * 256
         self.reg = [0] * 8
         self.pc = 0
+        self.FL = 0b00000000
         self.branchtable = {}
         self.branchtable[0b10000010] = self.handle_LDI
         self.branchtable[0b01000111] = self.handle_PRN
         self.branchtable[0b00000001] = self.handle_HLT
+        self.branchtable[0b10100111] = self.handle_CMP
 
     def load(self):
         """Load a program into memory."""
@@ -40,6 +42,15 @@ class CPU:
             self.reg[reg_a] *= self.reg[reg_b]
         elif op == "DIV":
             self.reg[reg_a] /= self.reg[reg_b]
+        elif op == 'CMP':
+            a = self.reg[reg_a]
+            b = self.reg[reg_b]
+            if a == b:
+                self.FL = 0b00000001
+            elif a > b:
+                self.FL = 0b00000010
+            elif a < b:
+                self.FL = 0b00000100
         else:
             raise Exception("Unsupported ALU operation")
 
@@ -60,6 +71,11 @@ class CPU:
     def handle_PRN(self):
         reg_address = self.ram[self.pc + 1]
         print(self.reg[reg_address])
+
+    def handle_CMP(self):
+        reg_address_a = self.ram[self.pc + 1]
+        reg_address_b = self.ram[self.pc + 2]
+        self.alu('CMP', reg_address_a, reg_address_b)
 
     def run(self):
         """Run the CPU."""
