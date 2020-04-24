@@ -14,6 +14,7 @@ class CPU:
         self.branchtable[0b10100111] = self.handle_CMP
         self.branchtable[0b01010100] = self.handle_JMP
         self.branchtable[0b01010101] = self.handle_JEQ
+        self.branchtable[0b01010110] = self.handle_JNE
 
     def load(self):
         """Load a program into memory."""
@@ -77,21 +78,25 @@ class CPU:
     def handle_CMP(self):
         reg_address_a = self.ram[self.pc + 1]
         reg_address_b = self.ram[self.pc + 2]
-        self.alu('CMP', reg_address_a, reg_address_b)
 
     def handle_JMP(self):
-        return_address = self.pc + 2
-        self.reg[7] -= 1
-        self.ram[self.reg[7]] = return_address
-
         reg_address = self.ram[self.pc + 1]
-        pc = self.reg[reg_address]
+        self.pc = self.reg[reg_address]
 
     def handle_JEQ(self):
         eq = self.FL & 0b00000001
 
         if eq:
-            self.handle_JMP()
+            reg_address = self.ram[self.pc + 1]
+            self.pc = self.reg[reg_address]
+        else:
+            self.pc += 2
+
+    def handle_JNE(self):
+        eq = self.FL & 0b00000001
+        if not eq:
+            reg_address = self.ram[self.pc + 1]
+            self.pc = self.reg[reg_address]
         else:
             self.pc += 2
 
