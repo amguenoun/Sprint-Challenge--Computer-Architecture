@@ -13,6 +13,7 @@ class CPU:
         self.branchtable[0b00000001] = self.handle_HLT
         self.branchtable[0b10100111] = self.handle_CMP
         self.branchtable[0b01010100] = self.handle_JMP
+        self.branchtable[0b01010101] = self.handle_JEQ
 
     def load(self):
         """Load a program into memory."""
@@ -85,6 +86,14 @@ class CPU:
 
         reg_address = self.ram[self.pc + 1]
         pc = self.reg[reg_address]
+
+    def handle_JEQ(self):
+        eq = self.FL & 0b00000001
+
+        if eq:
+            self.handle_JMP()
+        else:
+            self.pc += 2
 
     def run(self):
         """Run the CPU."""
