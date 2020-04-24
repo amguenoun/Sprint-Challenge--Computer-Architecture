@@ -12,6 +12,7 @@ class CPU:
         self.branchtable[0b01000111] = self.handle_PRN
         self.branchtable[0b00000001] = self.handle_HLT
         self.branchtable[0b10100111] = self.handle_CMP
+        self.branchtable[0b01010100] = self.handle_JMP
 
     def load(self):
         """Load a program into memory."""
@@ -76,6 +77,14 @@ class CPU:
         reg_address_a = self.ram[self.pc + 1]
         reg_address_b = self.ram[self.pc + 2]
         self.alu('CMP', reg_address_a, reg_address_b)
+
+    def handle_JMP(self):
+        return_address = self.pc + 2
+        self.reg[7] -= 1
+        self.ram[self.reg[7]] = return_address
+
+        reg_address = self.ram[self.pc + 1]
+        pc = self.reg[reg_address]
 
     def run(self):
         """Run the CPU."""
