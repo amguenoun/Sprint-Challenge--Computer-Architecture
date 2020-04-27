@@ -149,10 +149,11 @@ class CPU:
         reg_b = self.ram[self.pc + 2]
         self.alu('SHR', reg_a, reg_b)
 
-    def handle_SHR(self):
+    def handle_MOD(self):
         reg_a = self.ram[self.pc + 1]
         reg_b = self.ram[self.pc + 2]
         self.alu('MOD', reg_a, reg_b)
+
 
     def run(self):
         """Run the CPU."""
