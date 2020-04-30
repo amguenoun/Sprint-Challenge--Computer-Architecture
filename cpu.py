@@ -15,6 +15,8 @@ class CPU:
         self.branchtable[0b01010100] = self.handle_JMP
         self.branchtable[0b01010101] = self.handle_JEQ
         self.branchtable[0b01010110] = self.handle_JNE
+        self.branchtable[0b01010111] = self.handle_JGT
+        self.branchtable[0b01011010] = self.handle_JGE
 
         self.branchtable[0b10101000] = self.handle_AND
         self.branchtable[0b10101010] = self.handle_OR
@@ -120,6 +122,21 @@ class CPU:
         else:
             self.pc += 2
 
+    def handle_JGT(self):
+        gt = self.FL & 0b00000010
+        if gt == 1:
+            self.handle_JMP()
+        else: 
+            self.pc += 2
+
+    def handle_JGE(self):
+        gt = self.FL & 0b00000010
+        eq = self.FL & 0b00000001
+        if gt == 1 or eq == 1:
+            self.handle_JMP()
+        else: 
+            self.pc += 2
+
     def handle_AND(self):
         reg_a = self.ram[self.pc + 1]
         reg_b = self.ram[self.pc + 2]
@@ -149,10 +166,11 @@ class CPU:
         reg_b = self.ram[self.pc + 2]
         self.alu('SHR', reg_a, reg_b)
 
-    def handle_SHR(self):
+    def handle_MOD(self):
         reg_a = self.ram[self.pc + 1]
         reg_b = self.ram[self.pc + 2]
         self.alu('MOD', reg_a, reg_b)
+
 
     def run(self):
         """Run the CPU."""
