@@ -17,6 +17,8 @@ class CPU:
         self.branchtable[0b01010110] = self.handle_JNE
         self.branchtable[0b01010111] = self.handle_JGT
         self.branchtable[0b01011010] = self.handle_JGE
+        self.branchtable[0b01011000] = self.handle_JLT
+        self.branchtable[0b01011001] = self.handle_JLE
 
         self.branchtable[0b10101000] = self.handle_AND
         self.branchtable[0b10101010] = self.handle_OR
@@ -133,6 +135,21 @@ class CPU:
         gt = self.FL & 0b00000010
         eq = self.FL & 0b00000001
         if gt == 1 or eq == 1:
+            self.handle_JMP()
+        else: 
+            self.pc += 2
+    
+    def handle_JLT(self):
+        lt = self.FL & 0b00000100
+        if lt == 1:
+            self.handle_JMP()
+        else: 
+            self.pc += 2
+
+    def handle_JLE(self):
+        lt = self.FL & 0b00000100
+        eq = self.FL & 0b00000001
+        if lt == 1 or eq == 1:
             self.handle_JMP()
         else: 
             self.pc += 2
