@@ -111,6 +111,7 @@ class CPU:
         self.pc = self.reg[reg_address]
 
     def handle_JEQ(self):
+        #Runs JUMP if equal flag is up
         eq = self.FL & 0b00000001
         if eq == 1:
             self.handle_JMP()
@@ -118,6 +119,7 @@ class CPU:
             self.pc += 2
 
     def handle_JNE(self):
+        #Runs JUMP if equal flag is not up
         eq = self.FL & 0b00000001
         if not eq:
             self.handle_JMP()
@@ -125,6 +127,7 @@ class CPU:
             self.pc += 2
 
     def handle_JGT(self):
+        #Runs JUMP if greater than flag is up
         gt = self.FL & 0b00000010
         if gt == 1:
             self.handle_JMP()
@@ -132,6 +135,7 @@ class CPU:
             self.pc += 2
 
     def handle_JGE(self):
+        #Runs JUMP if greater than or equal flag is up
         gt = self.FL & 0b00000010
         eq = self.FL & 0b00000001
         if gt == 1 or eq == 1:
@@ -140,6 +144,7 @@ class CPU:
             self.pc += 2
     
     def handle_JLT(self):
+        #Runs JUMP if less than flag is up
         lt = self.FL & 0b00000100
         if lt == 1:
             self.handle_JMP()
@@ -147,6 +152,7 @@ class CPU:
             self.pc += 2
 
     def handle_JLE(self):
+        #Runs JUMP if less than or equal flag is up
         lt = self.FL & 0b00000100
         eq = self.FL & 0b00000001
         if lt == 1 or eq == 1:
